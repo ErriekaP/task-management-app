@@ -2,7 +2,7 @@
 
 # Task Management App
 
-This is a task management application built using **React** for the frontend and **Django** for the backend. It allows users to create, update, delete, and manage tasks effectively.
+This is a task management application built using **React** for the frontend, **Django** for the backend, **PostgreSQL** for the database, and **Docker** to containerize the application.
 
 ## Table of Contents
 
@@ -11,6 +11,7 @@ This is a task management application built using **React** for the frontend and
 - [Setup Instructions](#setup-instructions)
   - [Frontend Setup (React)](#frontend-setup-react)
   - [Backend Setup (Django)](#backend-setup-django)
+  - [Docker Setup](#docker-setup)
 - [Running the Application](#running-the-application)
 - [API Endpoints](#api-endpoints)
 - [Testing](#testing)
@@ -18,9 +19,11 @@ This is a task management application built using **React** for the frontend and
 
 ## Tech Stack
 
-- **Frontend**: React, JSX, Tailwind, DaisyUI, CSS, Axios
+- **Frontend**: React, JSX, CSS, Tailwind, DaisyUI, Axios
 - **Backend**: Django, Django Rest Framework
-- **Database**: SQLite (for development), PostgreSQL (production)
+- **Database**: PostgreSQL (in production and Docker setup)
+- **Containerization**: Docker
+- **Development Tools**: Docker Compose
 
 ## Features
 
@@ -99,13 +102,24 @@ This is a task management application built using **React** for the frontend and
    pip install -r requirements.txt
    ```
 
-4. **Set up the database**
+4. **PostgreSQL Database Configuration**
 
-   Run the following command to set up the database and apply migrations:
+   Update the `DATABASES` configuration in `settings.py` to use PostgreSQL:
 
-   ```bash
-   python manage.py migrate
+   ```python
+   DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.postgresql',
+           'NAME': 'task_db',
+           'USER': 'task_user',
+           'PASSWORD': 'password123',
+           'HOST': 'db',  # Name of the Docker container
+           'PORT': '5432',
+       }
+   }
    ```
+
+   You'll also set up PostgreSQL in Docker (explained below).
 
 5. **Create a superuser (optional)**
 
@@ -129,25 +143,140 @@ This is a task management application built using **React** for the frontend and
 
 ---
 
+### Docker Setup
+
+Docker is used to containerize the app and manage dependencies in a more consistent environment. The following instructions set up both frontend and backend inside Docker containers.
+
+1. **Create the `.env` file for the backend**
+
+   Create a `.env` file inside the `backend` directory and add your environment variables, especially for PostgreSQL connection:
+
+   ```bash
+   DB_NAME=task_db
+   DB_USER=task_user
+   DB_PASSWORD=password123
+   DB_HOST=db
+   DB_PORT=5432
+   ```
+
+2. **Dockerize the Application**
+
+   We will use **Docker Compose** to create the necessary services.
+
+   1. **Dockerfile (Frontend)**
+
+      Create a `Dockerfile` in the `frontend` directory:
+
+      ```dockerfile
+      # Frontend Dockerfile
+      FROM node:16
+
+      WORKDIR /app
+
+      COPY package.json package-lock.json ./
+      RUN npm install
+
+      COPY . .
+
+      CMD ["npm", "start"]
+      ```
+
+   2. **Dockerfile (Backend)**
+
+      Create a `Dockerfile` in the `backend` directory:
+
+      ```dockerfile
+      # Backend Dockerfile
+      FROM python:3.8-slim
+
+      WORKDIR /app
+
+      COPY requirements.txt .
+
+      RUN pip install -r requirements.txt
+
+      COPY . .
+
+      CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+      ```
+
+   3. **Docker Compose Configuration**
+
+      Create a `docker-compose.yml` file in the root of your project:
+
+      ```yaml
+      version: '3'
+
+      services:
+        db:
+          image: postgres:13
+          environment:
+            POSTGRES_DB: task_db
+            POSTGRES_USER: task_user
+            POSTGRES_PASSWORD: password123
+          volumes:
+            - postgres_data:/var/lib/postgresql/data
+          networks:
+            - task-net
+
+        backend:
+          build: ./backend
+          command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+          volumes:
+            - ./backend:/app
+          environment:
+            - DB_NAME=task_db
+            - DB_USER=task_user
+            - DB_PASSWORD=password123
+            - DB_HOST=db
+            - DB_PORT=5432
+          ports:
+            - "8000:8000"
+          depends_on:
+            - db
+          networks:
+            - task-net
+
+        frontend:
+          build: ./frontend
+          volumes:
+            - ./frontend:/app
+          ports:
+            - "3000:3000"
+          depends_on:
+            - backend
+          networks:
+            - task-net
+
+      volumes:
+        postgres_data:
+
+      networks:
+        task-net:
+          driver: bridge
+      ```
+
+3. **Build and Run with Docker**
+
+   From the root of your project directory, build and start the Docker containers:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+   The app will be accessible at:
+
+   - Frontend: `http://localhost:3000`
+   - Backend: `http://localhost:8000`
+
+---
+
 ## Running the Application
 
-1. **Start the backend**
+After setting up the Docker containers, you should be able to access the task management app by navigating to:
 
-   Navigate to the `backend` directory and run:
-
-   ```bash
-   python manage.py runserver
-   ```
-
-2. **Start the frontend**
-
-   Navigate to the `frontend` directory and run:
-
-   ```bash
-   npm start
-   ```
-
-Now, you should be able to access the task management app by navigating to `http://localhost:3000` in your browser.
+- **Frontend**: `http://localhost:3000`
+- **Backend**: `http://localhost:8000`
 
 ---
 
@@ -163,13 +292,13 @@ Now, you should be able to access the task management app by navigating to `http
 
 ## Testing
 
-To run the Django tests, use the following command:
+To run the Django tests:
 
 ```bash
 python manage.py test
 ```
 
-To run React tests (if you have any), use:
+To run React tests (if you have any):
 
 ```bash
 npm test
@@ -187,8 +316,3 @@ npm test
 6. Open a Pull Request
 
 ---
-
-Feel free to reach out if you have any questions or run into issues!
-
----
-
