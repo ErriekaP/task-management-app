@@ -287,8 +287,9 @@ After setting up the Docker containers, you should be able to access the task ma
 - **POST** `/api/tasks/` - Create a new task
 - **GET** `/api/tasks/` - List all tasks
 - **GET** `/api/tasks/{id}/` - Get a specific task
-- **PUT** `/api/tasks/{id}/` - Update a specific task
-- **DELETE** `/api/tasks/{id}/` - Delete a task
+- **PUT** `/api/tasks/update/{id}/` - Update a specific task
+- **DELETE** `/api/tasks/delete/{id}/` - Delete a task
+  
 
 ---
 
