@@ -1,8 +1,8 @@
----
+
 
 # Task Management App
 
-This is a task management application built using **React** for the frontend, **Django** for the backend, **PostgreSQL** for the database, and **Docker** to containerize the application.
+This is a task management application built using **React** for the frontend, **Django** for the backend, **PostgreSQL** for the database, and **Docker** to containerize the application. The app is styled using **TailwindCSS** and utilizes **DaisyUI** for pre-designed UI components.
 
 ## Table of Contents
 
@@ -16,14 +16,16 @@ This is a task management application built using **React** for the frontend, **
 - [API Endpoints](#api-endpoints)
 - [Testing](#testing)
 - [Contributing](#contributing)
+- [Architecture and Design Choices](#architecture-and-design-choices)
 
 ## Tech Stack
 
-- **Frontend**: React, JSX, CSS, Tailwind, DaisyUI, Axios
+- **Frontend**: React, JSX, CSS, Axios
 - **Backend**: Django, Django Rest Framework
 - **Database**: PostgreSQL (in production and Docker setup)
 - **Containerization**: Docker
 - **Development Tools**: Docker Compose
+- **Styling**: TailwindCSS, DaisyUI
 
 ## Features
 
@@ -145,7 +147,7 @@ This is a task management application built using **React** for the frontend, **
 
 ### Docker Setup
 
-Docker is used to containerize the app and manage dependencies in a more consistent environment. The following instructions set up both frontend and backend inside Docker containers.
+Docker is used to containerize the application, making it easy to deploy and manage. The following instructions set up both frontend and backend inside Docker containers.
 
 1. **Create the `.env` file for the backend**
 
@@ -266,7 +268,7 @@ Docker is used to containerize the app and manage dependencies in a more consist
 
    The app will be accessible at:
 
-   - Frontend: `http://localhost:5173`
+   - Frontend: `http://localhost:3000`
    - Backend: `http://localhost:8000`
 
 ---
@@ -314,5 +316,33 @@ npm test
 4. Commit your changes (`git commit -am 'Add new feature'`)
 5. Push to the branch (`git push origin feature-name`)
 6. Open a Pull Request
+
+---
+
+## Architecture and Design Choices
+
+The **Task Management App** is built using a modern full-stack architecture, integrating **React** on the frontend, **Django** with the **Django Rest Framework (DRF)** on the backend, and **PostgreSQL** as the database. This architecture ensures scalability, maintainability, and flexibility, while providing a rich, responsive user interface. Docker is used to containerize the application, providing a consistent development and production environment.
+
+### Frontend: React with TailwindCSS and DaisyUI
+
+React is chosen for the frontend due to its component-based architecture, which allows for reusable UI components and a seamless user experience. React's state management and virtual DOM make it ideal for building dynamic, high-performance web applications. In this app, React handles the user interface, with components for creating, updating, and displaying tasks.
+
+**TailwindCSS** is used for styling the application due to its utility-first approach, which promotes flexibility and rapid UI development. It allows developers to build custom designs by composing utility classes directly in HTML, making it easy to apply styles and maintain consistency throughout the app. TailwindCSS is also highly configurable, which ensures that the app’s design can be easily adjusted as the requirements evolve.
+
+**DaisyUI**, a component library built on top of TailwindCSS, is utilized to speed up development by providing pre-designed, accessible, and customizable UI components such as buttons, forms, modals, and cards. This helps maintain a consistent, polished look across the application while reducing the need for repetitive design work. DaisyUI's design system aligns well with the modern, clean aesthetic that the app aims for.
+
+### Backend: Django and Django Rest Framework (DRF)
+
+Django is used for the backend because it is a robust, secure, and scalable web framework that follows the **MTV (Model-Template-View)** architecture pattern. Django provides built-in features like authentication, form handling, and admin management, which speeds up development. The **Django Rest Framework (DRF)** is used to build the RESTful API that communicates with the frontend. DRF simplifies the creation of API endpoints by providing tools for serialization, validation, and authentication.
+
+PostgreSQL is chosen as the database due to its reliability, scalability, and support for advanced data types and operations. It ensures that the app can handle complex queries and large datasets efficiently, making it a solid choice for production-grade applications. The database is set up to store user information and task data, with relationships between tasks and users being well-defined.
+
+### Docker for Containerization
+
+Docker is used to containerize the application, making it easy to deploy and manage. Using **Docker Compose**, both the backend (Django) and frontend (React) services, along with the PostgreSQL database, can be spun up with a single command. Docker ensures that the application behaves the same across different environments (local, development, and production), thus eliminating the "works on my machine" problem. Additionally, Docker makes scaling, testing, and deployment easier by providing a consistent containerized environment.
+
+### Conclusion
+
+This architecture balances flexibility, performance, and scalability. The combination of React with TailwindCSS and DaisyUI ensures a responsive and modern frontend, while Django and DRF provide a solid backend that integrates seamlessly with PostgreSQL. Docker enables a smooth deployment process, making it easy to manage the entire stack in a containerized environment. These choices allow for a maintainable, scalable, and visually appealing task management application. 
 
 ---
