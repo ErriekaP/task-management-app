@@ -266,7 +266,7 @@ Docker is used to containerize the app and manage dependencies in a more consist
 
    The app will be accessible at:
 
-   - Frontend: `http://localhost:3000`
+   - Frontend: `http://localhost:5173`
    - Backend: `http://localhost:8000`
 
 ---
