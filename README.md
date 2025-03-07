@@ -18,7 +18,7 @@ This is a task management application built using **React** for the frontend and
 
 ## Tech Stack
 
-- **Frontend**: React, JSX, CSS, Axios
+- **Frontend**: React, JSX, Tailwind, DaisyUI, CSS, Axios
 - **Backend**: Django, Django Rest Framework
 - **Database**: SQLite (for development), PostgreSQL (production)
 
